@@ -53,7 +53,7 @@ if uploaded_resume:
             st.metric(label="Match Score", value=f"{score}/10")
             st.markdown("**Why:** " + reason)
 
-    # === Option 3: Bulk Emailing ===
+
     elif option == "Bulk Email Automation":
         st.warning("Emails will be sent from your Gmail. Use a valid App Password.")
         sender_email = st.text_input("Your Gmail Address")
