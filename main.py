@@ -63,7 +63,7 @@ if uploaded_resume:
         excel_file = st.file_uploader("Upload Excel/CSV with `Email` column", type=["csv", "xlsx"])
 
         if st.button("Send Emails") and excel_file:
-            result = send_bulk_emails(sender_email, sender_password, subject, body, excel_file)
+            result = send_bulk_emails(sender_email, sender_password, subject, body, excel_file,  uploaded_resume )
             if result.startswith(""):
                 st.success(result)
             else:
