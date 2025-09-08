@@ -6,3 +6,5 @@ python-dotenv
 PyMuPDF
 openpyxl
 pandas
+beautifulsoup4
+lxml
