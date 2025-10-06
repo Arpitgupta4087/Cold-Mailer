@@ -1,15 +1,12 @@
 import streamlit as st
 import requests
 import pandas as pd
-from emailer import send_bulk_emails # This is now a local import in the frontend folder
+from emailer import send_bulk_emails
 
-# --- Configuration ---
 BACKEND_URL = "http://127.0.0.1:8000"
 st.set_page_config(layout="wide", page_title="AI Job Outreach", page_icon="📬")
 st.title("AI Job Outreach Assistant")
 
-
-# --- Helper function to process resume via API ---
 def process_resume(uploaded_file):
     """Sends resume to backend for processing and stores text in session state."""
     files = {'file': (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
@@ -26,8 +23,6 @@ def process_resume(uploaded_file):
         st.error(f"Could not connect to the backend: {e}")
         st.session_state.resume_text = None
 
-
-# --- Sidebar for Resume Upload ---
 with st.sidebar:
     st.header("1. Upload Your Resume")
     uploaded_resume = st.file_uploader("Upload your resume (PDF only)", type=["pdf"])
@@ -37,7 +32,6 @@ with st.sidebar:
             process_resume(uploaded_resume)
             st.session_state.resume_filename = uploaded_resume.name
 
-# --- Main Application Logic ---
 if "resume_text" in st.session_state and st.session_state.resume_text:
     st.info("Resume loaded. You can now use the features below.")
 
@@ -47,7 +41,6 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
         "Bulk Email Automation"
     ], key="feature_select")
 
-    # --- Feature 1: Generate Cold Email ---
     if option == "Generate Cold Email":
         st.subheader("✉️ Generate Cold Email")
         job_url_or_text = st.text_area("Paste the job description URL or text here:")
@@ -57,7 +50,7 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
                 st.warning("Please provide a job description or URL.")
             else:
                 payload = {
-                    "job_description": job_url_or_text, # Backend can handle URL or text
+                    "job_description": job_url_or_text,
                     "resume_text": st.session_state.resume_text
                 }
                 try:
@@ -72,7 +65,6 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
                 except requests.exceptions.RequestException as e:
                     st.error(f"Could not connect to the backend: {e}")
 
-    # --- Feature 2: Resume-to-JD Score Matching ---
     elif option == "Resume-to-JD Score Matching":
         st.subheader("📊 Resume-to-JD Score Matching")
         jd_url = st.text_input("Enter the Job Description URL:")
@@ -98,8 +90,7 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
                             st.error(f"Error: {response.text}")
                 except requests.exceptions.RequestException as e:
                     st.error(f"Could not connect to the backend: {e}")
-                    
-    # --- Feature 3: Bulk Email Automation ---
+            
     elif option == "Bulk Email Automation":
         st.subheader("🚀 Bulk Email Automation")
         st.warning("This feature sends emails directly from this browser session. Ensure your Gmail App Password is correct.")
@@ -118,7 +109,6 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
                     st.error("Please fill in all fields.")
                 else:
                     with st.spinner("Sending emails..."):
-                        # Note: 'uploaded_resume' is the file-like object from the initial upload
                         result = send_bulk_emails(sender_email, sender_password, subject, body, excel_file, uploaded_resume)
                         if "✅" in result:
                             st.success(result)
