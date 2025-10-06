@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+python-multipart
+langchain-groq
+langchain
+langchain-community
+pydantic
+python-dotenv
+pymupdf
+beautifulsoup4
+streamlit
+requests
+pandas
+openpyxl
